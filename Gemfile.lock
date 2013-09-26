@@ -1,0 +1,12 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    rainbow (1.1.4)
+    wav-file (0.0.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  rainbow
+  wav-file
