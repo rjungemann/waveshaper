@@ -1,0 +1,50 @@
+#define SAMPLE_RATE 44 // 44.1kHz sample rate
+#define ADCS 2 // use both ADCs
+
+<%= defines.join("\n") %>
+
+#define getWavetableValue(in, table, len) table[ ((in + 32768) * len) / 65536 ]
+
+#include <AudioCodec_Maple.h>
+
+<%= datas.join("\n") %>
+
+// audio channel data
+int16 left_in = 0;
+int16 right_in = 0;
+int16 left_out = 0;
+int16 right_out = 0;
+
+// dial values
+uint16 mod0_value = 0;
+uint16 mod1_value = 0;
+
+void setup() {
+  SerialUSB.end();
+
+  AudioCodec_init();
+}
+
+void loop() {
+  while(1);
+}
+
+void AudioCodec_interrupt() {
+  AudioCodec_data(&left_in, &right_in, left_out, right_out);
+  AudioCodec_ADC(&mod0_value, &mod1_value);
+
+  uint16 wavetableIndex = (mod0_value * NUM_WAVETABLES) / 65536;
+  int16 wavetableValueI;
+  int16 wavetableValueJ;
+
+  switch(wavetableIndex) {
+<%= cases.join("\n") %>
+  }
+
+  int16 scaledValueI = (mod1_value * wavetableValueI) / 65536;
+  int16 scaledValueJ = (mod1_value * wavetableValueJ) / 65536;
+
+  left_out = scaledValueI;
+  right_out = scaledValueJ;
+}
+
